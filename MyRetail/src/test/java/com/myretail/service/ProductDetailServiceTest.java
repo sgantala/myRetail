@@ -7,10 +7,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +38,7 @@ import com.myretail.dao.ProductPriceRepository;
 import com.myretail.exception.ProductMisMatchException;
 import com.myretail.exception.ProductNotFoundException;
 import com.myretail.exception.ProductPriceNotFoundException;
+import com.myretail.exception.ServiceUnavailableException;
 import com.myretail.model.ProductInfo;
 import com.myretail.request.ProductInfoRequest;
 import com.myretail.response.CurrentPrice;
@@ -74,27 +72,12 @@ private RestTemplate restTemplateMock;
 @Autowired
 private ProductPriceRepository productPriceRepositoryMock;
 
-private static final String successResponseEntityMock =readFile("productData.txt");
+private static final String mock2="{\"product\":{\"available_to_promise_network\":{\"product_id\":\"123\"},\"item\":{\"product_description\":{ \"title\":\"The Big Lebowski (Blu-ray)\"}}}}";
+
+
 @Before
 public void setUp(){
 	Mockito.reset(this.restTemplateMock,this.productPriceRepositoryMock);
-}
-public static String readFile(String filename) {
-    String result = "";
-    try {
-    	InputStream inputStream =ProductDetailServiceTest.class.getResourceAsStream(filename);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String line = br.readLine();
-        while (line != null) {
-            sb.append(line);
-            line = br.readLine();
-        }
-        result = sb.toString();
-    } catch(Exception e) {
-        e.printStackTrace();
-    }
-    return result;
 }
 private Map jsonStringToMapConvert(String responseEntityMock){
 	Map<String, Object> map = new HashMap<String, Object>();
@@ -103,7 +86,6 @@ private Map jsonStringToMapConvert(String responseEntityMock){
 		String json = responseEntityMock;
 		// convert JSON string to Map
 		map = mapper.readValue(json, new TypeReference<Map<String, Object>>(){});
-		System.out.println(map);
 	} catch (JsonGenerationException e) {
 		e.printStackTrace();
 	} catch (JsonMappingException e) {
@@ -129,7 +111,7 @@ private ResponseEntity<Object> mockResponseSetup(String responseEntityMock){
 
 @Test
 public void testGetProductinfoServiceoWhenProductIdExists() throws Exception {
-	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenReturn(mockResponseSetup(successResponseEntityMock));
+	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenReturn(mockResponseSetup(mock2));
 	CurrentPrice current_price= new CurrentPrice("182.59", "USD");
 	ProductInfo productInfo = new ProductInfo("123", current_price);
 	Mockito.when(this.productPriceRepositoryMock.findByProductId(anyString())).thenReturn(productInfo);
@@ -150,7 +132,7 @@ public void testGetProductinfoServiceWhenProductNotFound() throws Exception {
 
 @Test(expected=ProductPriceNotFoundException.class)
 public void testGetProductinfoServiceoWhenProductPriceNotFound() throws Exception {
-	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenReturn(mockResponseSetup(successResponseEntityMock));
+	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenReturn(mockResponseSetup(mock2));
 	Mockito.when(this.productPriceRepositoryMock.findByProductId(anyString())).thenReturn(null);
 
 	this.productDetailService.getProductInfoByProductId("123");
@@ -162,13 +144,13 @@ public void testUpdateProductPriceInRepo() throws Exception {
 	CurrentPrice current_price = new CurrentPrice("132.32", "USD");
 	ProductInfo productInfo = new ProductInfo("123", current_price);
 
-	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenReturn(mockResponseSetup(successResponseEntityMock));
+	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenReturn(mockResponseSetup(mock2));
 	Mockito.when(this.productPriceRepositoryMock.findByProductId(anyString())).thenReturn(productInfo);
 	Mockito.when(this.productPriceRepositoryMock.save(any(ProductInfo.class))).thenReturn(productInfo);
 
 	String response=this.productDetailService.updateProductPriceByProductId(productInfoRequest, "123");
 
-	assertEquals("Success",response);
+	assertEquals("{\"response\":\"success\"}",response);
 }
 
 @Test(expected=ProductMisMatchException.class)
@@ -177,7 +159,13 @@ public void testUpdateProductPriceFailedWhenProductIdMisMatch() throws Exception
 
 	this.productDetailService.updateProductPriceByProductId(productInfoRequest, "456");
 }
+@Test(expected=ServiceUnavailableException.class)
+public void testUpdateProductInfoWhenServiceUnavailable() throws Exception{
+	ProductInfoRequest productInfoRequest = new ProductInfoRequest("123", "The Samsung TV", new CurrentPrice("199.99", "USD"));
+	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
 
+	this.productDetailService.updateProductPriceByProductId(productInfoRequest, "123");
+}
 @Test(expected=ProductNotFoundException.class)
 public void testUpdateProductPriceFailedWhenProductwasNotFound() throws Exception {
 	ProductInfoRequest productInfoRequest = new ProductInfoRequest("123", "The Samsung TV", new CurrentPrice("199.99", "USD"));
@@ -185,5 +173,4 @@ public void testUpdateProductPriceFailedWhenProductwasNotFound() throws Exceptio
 
 	this.productDetailService.updateProductPriceByProductId(productInfoRequest, "123");
 }
-
 }

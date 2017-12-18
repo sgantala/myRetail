@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.naming.ServiceUnavailableException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,13 +65,13 @@ public class ApiProductDetailControllerTest{
 		Mockito.reset(this.productDetailServiceMock);
 	}
 
-	public void setupForGetProductInfoWhenProductIdExists() {
+	public void setupForGetProductInfoWhenProductIdExists() throws ServiceUnavailableException {
 		CurrentPrice currentPrice = new CurrentPrice("12.59","USD");
 		ProductInfoResponse productInfoResponse = new ProductInfoResponse("123","test",currentPrice);
 		Mockito.when(this.productDetailServiceMock.getProductInfoByProductId(anyString())).thenReturn(productInfoResponse);
 	}
 
-	public void setupForGetProductInfoWhenProductIdNotExists() {
+	public void setupForGetProductInfoWhenProductIdNotExists() throws ServiceUnavailableException {
 		Mockito.when(this.productDetailServiceMock.getProductInfoByProductId(anyString())).thenThrow(new ProductNotFoundException());
 	}
 
@@ -109,7 +111,7 @@ public class ApiProductDetailControllerTest{
 		mockMvc.perform(put("/products/{id}", "567")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request)))
-				.andExpect(status().isOk());
+				.andExpect(status().isCreated());
 		verify(this.productDetailServiceMock,times(1)).updateProductPriceByProductId(anyObject(), anyString());
 		verifyNoMoreInteractions(this.productDetailServiceMock);
 	}
