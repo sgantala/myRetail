@@ -31,12 +31,14 @@ Output: Success message is returned if the price modification is done.
 ###Errors/Validations: Appropriate error messages are provided after validating the data. The client application can use the message in the response to display the same to the user appropriately.
 
 Technology stack used:
+JDK 1.8 -http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 Spring Boot - https://projects.spring.io/spring-boot/
 MongoDB - https://www.mongodb.com/
 Swagger - http://swagger.io/
 Maven - https://maven.apache.org/
 
-##Instructions to Setup 
+##Instructions to Setup
+Install JDK 1.8 (or 1.7) -http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 Install MongoDB  - https://docs.mongodb.com/manual/installation/
 Install Maven - https://maven.apache.org/install.html
 Run MongoDB - Run 'mongod.exe' in order to start Mongodb
