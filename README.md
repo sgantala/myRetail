@@ -31,7 +31,7 @@ Output: Success message is returned if the price modification is done.
 ###Errors/Validations: Appropriate error messages are provided after validating the data. The client application can use the message in the response to display the same to the user appropriately.
 
 Technology stack used:
-JDK 1.8
+JDK 1.8-http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 Spring Boot - https://projects.spring.io/spring-boot/
 MongoDB - https://www.mongodb.com/
 Swagger - http://swagger.io/
