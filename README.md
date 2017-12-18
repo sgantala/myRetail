@@ -13,7 +13,7 @@ Internal Working: When the API receives the request, it sends a request to "reds
 
 Output: For a product with product id '13860428', the sample JSON output is as shown below
 
-{"id":13860428,"name":"The Big Lebowski (Blu-ray) (Widescreen)","current_price":{"value": 12.49,"currency_code":"USD"}}
+{"id":13860428,"name":"The Big Lebowski (Blu-ray) (Widescreen)","current_price":{"value": 12.49,"currency_code":"AUD"}}
 
 Errors/Validations: Appropriate error messages are provided after validating the data. The client application can use the message in the response to display the same to the user appropriately.
 
