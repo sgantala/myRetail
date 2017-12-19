@@ -45,9 +45,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 	@Value("${HTTP}")
 	private String http;
 
-	@SuppressWarnings({"unchecked","rawtypes"})
+	@SuppressWarnings({"rawtypes"})
 	@Override
-	public ProductInfoResponse getProductInfoByProductId(String productId) throws ServiceUnavailableException {
+	public ProductInfoResponse getProductInfoByProductId(String productId) {
 		ProductInfoResponse productInfoResponse = new ProductInfoResponse();
 		if(productId!=null){
         	try {
@@ -62,16 +62,18 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         			}else{
         				throw new ProductPriceNotFoundException();
         			}
-        		}else if(response!=null && response.getStatusCodeValue()!=0 && String.valueOf(response.getStatusCodeValue()).startsWith("5")){
-        			throw new ServiceUnavailableException();
         		}
-
         		else{
         			throw new ProductNotFoundException();
         		}
         	}
-        	catch (ServiceUnavailableException e) {
-        		throw new ServiceUnavailableException();
+        	catch (HttpClientErrorException ex) {
+        		if(ex.getStatusCode().equals(HttpStatus.SERVICE_UNAVAILABLE)){
+        			throw new ServiceUnavailableException();
+        		}
+        		if(ex.getStatusCode().equals(HttpStatus.NOT_FOUND)){
+        			throw new ProductNotFoundException();
+        		}
         	}
         	catch (ProductPriceNotFoundException e) {
         		throw new ProductPriceNotFoundException();
@@ -85,7 +87,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 	}
 
 	@Override
-	public String updateProductPriceByProductId(ProductInfoRequest productInfoRequest, String productId) throws ServiceUnavailableException {
+	public String updateProductPriceByProductId(ProductInfoRequest productInfoRequest, String productId) {
 		if(productInfoRequest.getProductId()!=null && productId!=null && productId.equals(productInfoRequest.getProductId())){
 			if(productInfoRequest.getCurrentPrice()!=null && !productInfoRequest.getCurrentPrice().getValue().isEmpty()){
 				try{
