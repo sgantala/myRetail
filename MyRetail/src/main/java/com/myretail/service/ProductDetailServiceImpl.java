@@ -3,7 +3,6 @@ package com.myretail.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.ServiceUnavailableException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +17,7 @@ import com.myretail.dao.ProductPriceRepository;
 import com.myretail.exception.ProductMisMatchException;
 import com.myretail.exception.ProductNotFoundException;
 import com.myretail.exception.ProductPriceNotFoundException;
+import com.myretail.exception.ServiceUnavailableException;
 import com.myretail.model.ProductInfo;
 import com.myretail.request.ProductInfoRequest;
 import com.myretail.response.ProductInfoResponse;
@@ -101,7 +101,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 						throw new ProductNotFoundException();
 					}
 					if(ex.getStatusCode().equals(HttpStatus.SERVICE_UNAVAILABLE)){
-						throw new com.myretail.exception.ServiceUnavailableException();
+						throw new ServiceUnavailableException();
 					}
 				}
 			}
