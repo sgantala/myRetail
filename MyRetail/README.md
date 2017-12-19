@@ -42,7 +42,7 @@ Install JDK 1.8 (or 1.7) -http://www.oracle.com/technetwork/java/javase/download
 Install MongoDB  - https://docs.mongodb.com/manual/installation/
 Install Maven - https://maven.apache.org/install.html
 Run MongoDB - Run 'mongod.exe' in order to start Mongodb
-Clone the code from git repository - https://github.com/Gayathri16/MyRetail.git
+Clone the code from git repository - https://github.com/sgantala/myRetail.git
 Make sure you are in the MyRetail directory
 Run the following command to start:  mvn spring-boot:run
 Open browser and visit Swagger. http://localhost:8888/swagger-ui.html
