@@ -45,7 +45,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 	@Value("${HTTP}")
 	private String http;
 
-	@SuppressWarnings({"rawtypes"})
+	@SuppressWarnings({"unchecked","rawtypes"})
 	@Override
 	public ProductInfoResponse getProductInfoByProductId(String productId) throws ServiceUnavailableException {
 		ProductInfoResponse productInfoResponse = new ProductInfoResponse();
@@ -101,7 +101,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 						throw new ProductNotFoundException();
 					}
 					if(ex.getStatusCode().equals(HttpStatus.SERVICE_UNAVAILABLE)){
-						throw new com.myretail.exception.ServiceUnavailableException();
+						throw new ServiceUnavailableException();
 					}
 				}
 			}
