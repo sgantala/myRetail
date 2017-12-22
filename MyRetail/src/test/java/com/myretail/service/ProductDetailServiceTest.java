@@ -10,20 +10,23 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -34,6 +37,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableSet;
 import com.myretail.dao.ProductPriceRepository;
 import com.myretail.exception.ProductMisMatchException;
 import com.myretail.exception.ProductNotFoundException;
@@ -44,10 +48,7 @@ import com.myretail.request.ProductInfoRequest;
 import com.myretail.response.CurrentPrice;
 import com.myretail.response.ProductInfoResponse;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
-@WebMvcTest(ProductDetailService.class)
 public class ProductDetailServiceTest{
-
 @Configuration
  static class ProductDetailServiceTestConfiguration {
 	@Bean
@@ -172,5 +173,5 @@ public void testUpdateProductPriceFailedWhenProductwasNotFound() throws Exceptio
 	Mockito.when(this.restTemplateMock.getForEntity(anyString(), anyObject())).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
 	this.productDetailService.updateProductPriceByProductId(productInfoRequest, "123");
-}
+} 
 }

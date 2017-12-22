@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.myretail.exception.ServiceUnavailableException;
 import com.myretail.request.ProductInfoRequest;
 import com.myretail.response.ProductInfoResponse;
 import com.myretail.service.ProductDetailService;

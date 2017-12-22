@@ -1,9 +1,14 @@
 package com.myretail.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,6 +26,7 @@ import com.myretail.exception.ServiceUnavailableException;
 import com.myretail.model.ProductInfo;
 import com.myretail.request.ProductInfoRequest;
 import com.myretail.response.ProductInfoResponse;
+
 
 
 @Service
@@ -119,6 +125,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 					queryParam(excludeQueryKey, excludedQueryParams).build().toUriString();
 		return restTemplate.getForEntity(url, Map.class);
 	}
+	
+	/**
+	 * @return
+	 */
+	
+	
 	@SuppressWarnings({"unchecked","rawtypes"})
 	private ProductInfoResponse mapServiceResponseToProductInfoResponse(ResponseEntity<Map> response, ProductInfoResponse productInfoResponse){
 		Map<String, Map> infoMap = new HashMap<String, Map>();
